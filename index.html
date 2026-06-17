@@ -5,34 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventário de Aplicações</title>
 
-  <form id="form">
-  <input name="nome" placeholder="Nome">
-  <input name="email" placeholder="Email">
-  <textarea name="mensagem"></textarea>
-  <button type="submit">Enviar</button>
-</form>
-
-<script>
-document.getElementById("form").addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const data = {
-    nome: this.nome.value,
-    email: this.email.value,
-    mensagem: this.mensagem.value
-  };
-
-  await fetch("https://script.google.com/macros/s/AKfycbwfneyRY6PWklo7sU9jAEJ7c-XgrZSb-UuBSQ7RM1udIzbFsG_Rz3ZaK6UtwX5ewtJt/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
-
-  alert("Enviado");
-});
-</script>
-
-  
-
   <style>
     :root {
       --bg: #090b10;
@@ -919,7 +891,10 @@ document.getElementById("form").addEventListener("submit", async function(e) {
 
     function saveLocal() {
       localStorage.setItem(storageKey, JSON.stringify({ apps, viewMode }));
-      alert("Inventário salvo neste navegador.");
+
+      apps.forEach(app => enviarApp(app));
+
+      alert("Salvo local + enviado para planilha");
     }
 
     function loadLocal() {
@@ -1024,6 +999,14 @@ document.getElementById("form").addEventListener("submit", async function(e) {
 
     loadLocal();
     renderApps();
-  </script>
+  
+async function enviarApp(app) {
+  await fetch("https://script.google.com/macros/s/AKfycbwJVeimnxXisiEG6IZYIOZ0cU5vkYbRv1f_LN5Q7xIN-oKGN3DnaMEs4TA4e7KENVvGLg/exec", {
+    method: "POST",
+    body: JSON.stringify(app)
+  });
+}
+
+</script>
 </body>
 </html>

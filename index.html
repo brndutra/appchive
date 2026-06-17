@@ -22,7 +22,7 @@ document.getElementById("form").addEventListener("submit", async function(e) {
     mensagem: this.mensagem.value
   };
 
-  await fetch("SUA_URL_DO_SCRIPT_AQUI", {
+  await fetch("https://script.google.com/macros/s/AKfycbwfneyRY6PWklo7sU9jAEJ7c-XgrZSb-UuBSQ7RM1udIzbFsG_Rz3ZaK6UtwX5ewtJt/exec", {
     method: "POST",
     body: JSON.stringify(data)
   });

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventário de Aplicações</title>
+
+  <style>
+    :root {
+      --bg: #090b10;
+      --panel: #151a23;
+      --panel2: #1d2430;
+      --panel3: #252d3a;
+      --ink: #f5efe2;
+      --muted: #b8ad99;
+      --gold: #d8b85d;
+      --gold-soft: rgba(216,184,93,.16);
+      --line: rgba(216,184,93,.28);
+      --red: #a55a48;
+      --green: #639f78;
+      --blue: #6686bb;
+      --violet: #8f72bd;
+      --teal: #58a6a6;
+      --gray: #7f8490;
+      --shadow: 0 22px 70px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(216,184,93,.16), transparent 28rem),
+        radial-gradient(circle at 90% 0%, rgba(165,90,72,.18), transparent 30rem),
+        linear-gradient(135deg, #080a0e, #111722 48%, #080a0e);
+      color: var(--ink);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at center, black, transparent 76%);
+    }
+
+    .wrap {
+      width: min(1360px, 94vw);
+      margin: 22px auto 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.018)),
+        rgba(18,22,31,.92);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      border: 1px solid rgba(216,184,93,.48);
+      background:
+        radial-gradient(circle at 35% 25%, rgba(255,236,170,.55), transparent 22%),
+        linear-gradient(145deg, rgba(216,184,93,.24), rgba(165,90,72,.16)),
+        #1b202b;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      font-family: Georgia, serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      box-shadow: inset 0 0 24px rgba(216,184,93,.12);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 3vw, 2.4rem);
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: var(--ink);
+    }
+
+    .sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: .92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 780px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button, input, select {
+      border: 1px solid var(--line);
+      background: rgba(37,45,58,.92);
+      color: var(--ink);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    input::placeholder { color: rgba(184,173,153,.68); }
+
+    button {
+      cursor: pointer;
+      color: var(--gold);
+      transition: .16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: #303848;
+      border-color: rgba(216,184,93,.56);
+    }
+
+    .primary {
+      background:
+        linear-gradient(135deg, rgba(216,184,93,.30), rgba(165,90,72,.16)),
+        var(--panel3);
+      border-color: rgba(216,184,93,.56);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      font-size: 1.08rem;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      border: 1px solid rgba(216,184,93,.18);
+      border-radius: 18px;
+      background: rgba(21,26,35,.75);
+      padding: 13px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 72px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .stat strong {
+      font-size: 1.75rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.018)),
+        rgba(21,26,35,.94);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) 220px 240px 160px;
+      gap: 10px;
+      padding: 16px;
+      border-bottom: 1px solid rgba(216,184,93,.16);
+      background: rgba(255,255,255,.022);
+    }
+
+    .app-list {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .app-card {
+      position: relative;
+      border: 1px solid rgba(216,184,93,.18);
+      border-radius: 20px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.052), rgba(255,255,255,.014)),
+        rgba(29,36,48,.90);
+      overflow: hidden;
+      transition: .18s ease;
+    }
+
+    .app-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(216,184,93,.40);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.02)),
+        rgba(35,43,57,.95);
+    }
+
+    .app-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: var(--gold);
+      opacity: .8;
+    }
+
+    .app-card.cat-trabalho-utms::before { background: var(--gold); }
+    .app-card.cat-trabalho-outro-setor::before { background: var(--blue); }
+    .app-card.cat-trabalho-outro-juizo::before { background: #b7794d; }
+    .app-card.cat-pessoal-organizacao::before { background: #7fa86b; }
+    .app-card.cat-pessoal-financas::before { background: #65a36f; }
+    .app-card.cat-pessoal-saude::before { background: #5bb0a7; }
+    .app-card.cat-pessoal-casa::before { background: #b99360; }
+    .app-card.cat-pessoal-rotina::before { background: #8aa0d0; }
+    .app-card.cat-estudo::before { background: var(--teal); }
+    .app-card.cat-rpg::before { background: var(--violet); }
+    .app-card.cat-outro::before { background: var(--gray); }
+
+    .card-main {
+      display: grid;
+      grid-template-columns: minmax(230px, 1.25fr) minmax(180px, .8fr) minmax(190px, .8fr) 170px;
+      gap: 14px;
+      padding: 16px 16px 14px 22px;
+      align-items: start;
+    }
+
+    .app-title {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #fff6da;
+      font-size: 1.2rem;
+      font-weight: 700;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .app-purpose {
+      color: var(--muted);
+      line-height: 1.45;
+      outline: none;
+      min-height: 38px;
+    }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+    }
+
+    .label {
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(184,173,153,.80);
+      margin-bottom: 3px;
+      font-weight: 700;
+    }
+
+    .field {
+      min-height: 35px;
+      padding: 8px 9px;
+      border: 1px solid rgba(216,184,93,.13);
+      border-radius: 10px;
+      background: rgba(8,10,14,.30);
+      color: var(--ink);
+      outline: none;
+      overflow-wrap: anywhere;
+    }
+
+    .field:focus, .app-title:focus, .app-purpose:focus, .url-input:focus {
+      box-shadow: 0 0 0 2px rgba(216,184,93,.18);
+      background: rgba(216,184,93,.08);
+      border-radius: 8px;
+    }
+
+    .file {
+      color: #f0d486;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .88rem;
+    }
+
+    .actions {
+      display: grid;
+      gap: 8px;
+      justify-items: stretch;
+    }
+
+    .status, .category {
+      width: 100%;
+      font-weight: 700;
+    }
+
+    select.ativo { background: rgba(99,159,120,.24); border-color: rgba(99,159,120,.55); }
+    select.em-desenvolvimento { background: rgba(102,134,187,.25); border-color: rgba(102,134,187,.55); }
+    select.pausado { background: rgba(216,184,93,.20); border-color: rgba(216,184,93,.55); }
+    select.abandonado { background: rgba(165,90,72,.24); border-color: rgba(165,90,72,.55); }
+    select.arquivado { background: rgba(127,132,144,.22); border-color: rgba(127,132,144,.50); }
+
+    select.cat-trabalho-utms { background: rgba(216,184,93,.18); border-color: rgba(216,184,93,.55); }
+    select.cat-trabalho-outro-setor { background: rgba(102,134,187,.22); border-color: rgba(102,134,187,.55); }
+    select.cat-trabalho-outro-juizo { background: rgba(183,121,77,.22); border-color: rgba(183,121,77,.55); }
+    select.cat-pessoal-organizacao { background: rgba(127,168,107,.22); border-color: rgba(127,168,107,.55); }
+    select.cat-pessoal-financas { background: rgba(101,163,111,.22); border-color: rgba(101,163,111,.55); }
+    select.cat-pessoal-saude { background: rgba(91,176,167,.22); border-color: rgba(91,176,167,.55); }
+    select.cat-pessoal-casa { background: rgba(185,147,96,.22); border-color: rgba(185,147,96,.55); }
+    select.cat-pessoal-rotina { background: rgba(138,160,208,.22); border-color: rgba(138,160,208,.55); }
+    select.cat-estudo { background: rgba(88,166,166,.22); border-color: rgba(88,166,166,.55); }
+    select.cat-rpg { background: rgba(143,114,189,.24); border-color: rgba(143,114,189,.55); }
+    select.cat-outro { background: rgba(127,132,144,.22); border-color: rgba(127,132,144,.50); }
+
+    .delete {
+      color: #ffb7ad;
+      border-color: rgba(165,90,72,.44);
+      background: rgba(103,47,50,.20);
+    }
+
+    .cat-badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .badge-trabalho-utms { color: #ffe8a4; background: rgba(216,184,93,.18); }
+    .badge-trabalho-outro-setor { color: #cfe0ff; background: rgba(102,134,187,.20); }
+    .badge-trabalho-outro-juizo { color: #ffd9bc; background: rgba(183,121,77,.20); }
+    .badge-pessoal-organizacao { color: #e0ffd6; background: rgba(127,168,107,.20); }
+    .badge-pessoal-financas { color: #d7ffdf; background: rgba(101,163,111,.20); }
+    .badge-pessoal-saude { color: #d5fffb; background: rgba(91,176,167,.20); }
+    .badge-pessoal-casa { color: #ffe8c2; background: rgba(185,147,96,.20); }
+    .badge-pessoal-rotina { color: #dce7ff; background: rgba(138,160,208,.20); }
+    .badge-estudo { color: #c9ffff; background: rgba(88,166,166,.20); }
+    .badge-rpg { color: #eadbff; background: rgba(143,114,189,.22); }
+    .badge-outro { color: #e0e0e0; background: rgba(127,132,144,.20); }
+
+    .links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 16px 16px 22px;
+    }
+
+    .link-box {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(216,184,93,.22);
+      background: rgba(216,184,93,.07);
+    }
+
+    .link-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+      background: rgba(216,184,93,.12);
+      border: 1px solid rgba(216,184,93,.18);
+      flex: 0 0 auto;
+      font-size: .9rem;
+    }
+
+    .url-input {
+      min-width: 0;
+      border: none;
+      background: transparent;
+      padding: 4px 0;
+      color: var(--gold);
+      font-size: .84rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .open-link {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: var(--gold);
+      border-color: rgba(216,184,93,.22);
+      background: rgba(8,10,14,.30);
+      text-decoration: none;
+      cursor: pointer;
+      transition: .16s ease;
+      font-size: .9rem;
+    }
+
+    .open-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(216,184,93,.56);
+      background: rgba(216,184,93,.14);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      padding: 16px;
+    }
+
+    .app-table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    .app-table th {
+      text-align: left;
+      padding: 0 10px 8px;
+      color: var(--muted);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      white-space: nowrap;
+    }
+
+    .app-table td {
+      padding: 10px;
+      background: rgba(29,36,48,.90);
+      border-top: 1px solid rgba(216,184,93,.16);
+      border-bottom: 1px solid rgba(216,184,93,.16);
+      vertical-align: middle;
+    }
+
+    .app-table td:first-child {
+      border-left: 1px solid rgba(216,184,93,.16);
+      border-radius: 14px 0 0 14px;
+      font-weight: 800;
+      color: #fff6da;
+      min-width: 190px;
+    }
+
+    .app-table td:last-child {
+      border-right: 1px solid rgba(216,184,93,.16);
+      border-radius: 0 14px 14px 0;
+    }
+
+    .table-field {
+      min-width: 100px;
+      outline: none;
+      border-radius: 8px;
+      padding: 5px 6px;
+    }
+
+    .table-field:focus {
+      background: rgba(216,184,93,.10);
+      box-shadow: 0 0 0 2px rgba(216,184,93,.16);
+    }
+
+    .table-url {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(216,184,93,.25);
+      color: var(--gold);
+      background: rgba(216,184,93,.07);
+      cursor: pointer;
+    }
+
+    @media (max-width: 1120px) {
+      .topbar { grid-template-columns: 1fr; }
+      .toolbar { justify-content: flex-start; }
+      .dashboard { grid-template-columns: repeat(2, 1fr); }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .card-main { grid-template-columns: 1fr 1fr; }
+      .actions { grid-column: span 2; grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .controls { grid-template-columns: 1fr; }
+      .card-main { grid-template-columns: 1fr; }
+      .actions { grid-column: auto; grid-template-columns: 1fr; }
+      .dashboard { grid-template-columns: 1fr; }
+      .links { grid-template-columns: 1fr; }
+      .sub { white-space: normal; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap" id="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark">IA</div>
+        <div>
+          <h1>Inventário de Aplicações</h1>
+          <div class="sub">Replit · Claude · GitHub · versões locais · categorias · próxima ação</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button class="primary" onclick="addApp()">+ App</button>
+        <button id="viewToggle" class="icon-btn" title="Modo lista" onclick="toggleView()">☰</button>
+        <button onclick="exportDoc()">DOC</button>
+        <button onclick="exportJSON()">JSON</button>
+        <button onclick="saveLocal()">Salvar</button>
+      </div>
+    </header>
+
+    <section class="dashboard">
+      <div class="stat"><span>Total</span><strong id="totalApps">0</strong></div>
+      <div class="stat"><span>Trabalho - UTMS</span><strong id="utmsApps">0</strong></div>
+      <div class="stat"><span>RPG</span><strong id="rpgApps">0</strong></div>
+      <div class="stat"><span>Pessoais</span><strong id="personalApps">0</strong></div>
+      <div class="stat"><span>Ativos</span><strong id="activeApps">0</strong></div>
+    </section>
+
+    <section class="panel">
+      <div class="controls">
+        <input id="search" placeholder="Buscar por app, categoria, conta, arquivo, finalidade..." oninput="renderApps()" />
+        <select id="statusFilter" onchange="renderApps()">
+          <option value="">Todos os status</option>
+          <option>Ativo</option>
+          <option>Em desenvolvimento</option>
+          <option>Pausado</option>
+          <option>Abandonado</option>
+          <option>Arquivado</option>
+        </select>
+        <select id="categoryFilter" onchange="renderApps()">
+          <option value="">Todas as categorias</option>
+          <option>Trabalho - UTMS</option>
+          <option>Trabalho - Outro Setor</option>
+          <option>Trabalho - Outro Juízo</option>
+          <option>Pessoal - Organização</option>
+          <option>Pessoal - Finanças</option>
+          <option>Pessoal - Saúde</option>
+          <option>Pessoal - Casa</option>
+          <option>Pessoal - Rotina</option>
+          <option>Estudo</option>
+          <option>RPG</option>
+          <option>Outro</option>
+        </select>
+        <button onclick="clearSaved()">Limpar salvos</button>
+      </div>
+
+      <div id="appList" class="app-list"></div>
+    </section>
+  </main>
+
+  <script>
+    const storageKey = "inventarioAplicacoes_integral_corrigido_v2";
+
+    const statuses = ["Ativo", "Em desenvolvimento", "Pausado", "Abandonado", "Arquivado"];
+
+    const categories = [
+      "Trabalho - UTMS",
+      "Trabalho - Outro Setor",
+      "Trabalho - Outro Juízo",
+      "Pessoal - Organização",
+      "Pessoal - Finanças",
+      "Pessoal - Saúde",
+      "Pessoal - Casa",
+      "Pessoal - Rotina",
+      "Estudo",
+      "RPG",
+      "Outro"
+    ];
+
+    let viewMode = "cards";
+
+    let apps = [
+      {
+        nome: "AppRegional TRg/MS",
+        categoria: "Trabalho - UTMS",
+        conta: "Replit conta X / GitHub Y",
+        projeto: "https://replit.com/...",
+        deploy: "https://...",
+        status: "Ativo",
+        finalidade: "Gestão de pauta, sessão e sustentações.",
+        ultimoArquivo: "AppRegional_v32.tsx",
+        ultima: "16/06/2026",
+        proxima: "Revisar cronômetro flutuante."
+      }
+    ];
+
+    function normalize(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function escapeHTML(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function cleanUrl(raw) {
+      let url = String(raw || "").trim();
+      url = url.replace(/^Projeto:\s*/i, "").replace(/^Deploy:\s*/i, "").trim();
+
+      if (!url || url === "https://..." || url === "https://replit.com/...") return "";
+
+      if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+
+      return url;
+    }
+
+    function openUrl(url) {
+      const target = cleanUrl(url);
+      if (!target) {
+        alert("Informe um link válido antes de abrir.");
+        return;
+      }
+      window.open(target, "_blank", "noopener,noreferrer");
+    }
+
+    function updateField(index, field, value) {
+      apps[index][field] = value;
+      updateStats();
+    }
+
+    function updateStatus(index, value) {
+      apps[index].status = value;
+      renderApps();
+    }
+
+    function updateCategory(index, value) {
+      apps[index].categoria = value;
+      renderApps();
+    }
+
+    function addApp() {
+      apps.unshift({
+        nome: "Novo app",
+        categoria: "Outro",
+        conta: "",
+        projeto: "",
+        deploy: "",
+        status: "Em desenvolvimento",
+        finalidade: "",
+        ultimoArquivo: "",
+        ultima: new Date().toLocaleDateString("pt-BR"),
+        proxima: ""
+      });
+      renderApps();
+    }
+
+    function removeApp(index) {
+      apps.splice(index, 1);
+      renderApps();
+    }
+
+    function filteredApps() {
+      const q = document.getElementById("search").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
+      const category = document.getElementById("categoryFilter").value;
+
+      return apps
+        .map((app, index) => ({ app, index }))
+        .filter(({ app }) => {
+          const text = Object.values(app).join(" ").toLowerCase();
+          return text.includes(q)
+            && (!status || app.status === status)
+            && (!category || app.categoria === category);
+        });
+    }
+
+    function renderApps() {
+      if (viewMode === "list") {
+        renderTable();
+      } else {
+        renderCards();
+      }
+      updateStats();
+    }
+
+    function renderCards() {
+      const list = document.getElementById("appList");
+      list.className = "app-list";
+      const items = filteredApps();
+
+      if (!items.length) {
+        list.innerHTML = `<article class="app-card"><div class="card-main"><div class="app-purpose">Nenhum app encontrado.</div></div></article>`;
+        return;
+      }
+
+      list.innerHTML = items.map(({ app, index }) => {
+        const catClass = "cat-" + normalize(app.categoria || "Outro");
+        const badgeClass = "badge-" + normalize(app.categoria || "Outro");
+
+        return `
+          <article class="app-card ${catClass}">
+            <div class="card-main">
+              <div>
+                <div class="cat-badge ${badgeClass}">${escapeHTML(app.categoria || "Outro")}</div>
+                <div class="label">Aplicação</div>
+                <div class="app-title" contenteditable="true" oninput="updateField(${index}, 'nome', this.innerText)">${escapeHTML(app.nome)}</div>
+
+                <div class="label">Finalidade</div>
+                <div class="app-purpose field" contenteditable="true" oninput="updateField(${index}, 'finalidade', this.innerText)">${escapeHTML(app.finalidade)}</div>
+              </div>
+
+              <div class="meta">
+                <div>
+                  <div class="label">Conta / Plataforma</div>
+                  <div class="field" contenteditable="true" oninput="updateField(${index}, 'conta', this.innerText)">${escapeHTML(app.conta)}</div>
+                </div>
+                <div>
+                  <div class="label">Última alteração</div>
+                  <div class="field" contenteditable="true" oninput="updateField(${index}, 'ultima', this.innerText)">${escapeHTML(app.ultima)}</div>
+                </div>
+              </div>
+
+              <div class="meta">
+                <div>
+                  <div class="label">Último arquivo</div>
+                  <div class="field file" contenteditable="true" oninput="updateField(${index}, 'ultimoArquivo', this.innerText)">${escapeHTML(app.ultimoArquivo)}</div>
+                </div>
+                <div>
+                  <div class="label">Próxima ação</div>
+                  <div class="field" contenteditable="true" oninput="updateField(${index}, 'proxima', this.innerText)">${escapeHTML(app.proxima)}</div>
+                </div>
+              </div>
+
+              <div class="actions">
+                <select class="category cat-${normalize(app.categoria)}" onchange="updateCategory(${index}, this.value)">
+                  ${categories.map(c => `<option ${app.categoria === c ? "selected" : ""}>${c}</option>`).join("")}
+                </select>
+
+                <select class="status ${normalize(app.status)}" onchange="updateStatus(${index}, this.value)">
+                  ${statuses.map(s => `<option ${app.status === s ? "selected" : ""}>${s}</option>`).join("")}
+                </select>
+
+                <button class="delete" onclick="removeApp(${index})">Excluir</button>
+              </div>
+            </div>
+
+            <div class="links">
+              <div class="link-box">
+                <span class="link-icon">◈</span>
+                <input
+                  class="url-input"
+                  value="${escapeHTML(app.projeto)}"
+                  placeholder="Link do projeto"
+                  oninput="updateField(${index}, 'projeto', this.value)"
+                />
+                <button class="open-link" title="Abrir projeto" onclick="openUrl(apps[${index}].projeto)">↗</button>
+              </div>
+
+              <div class="link-box">
+                <span class="link-icon">✦</span>
+                <input
+                  class="url-input"
+                  value="${escapeHTML(app.deploy)}"
+                  placeholder="Link do deploy"
+                  oninput="updateField(${index}, 'deploy', this.value)"
+                />
+                <button class="open-link" title="Abrir deploy" onclick="openUrl(apps[${index}].deploy)">↗</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTable() {
+      const list = document.getElementById("appList");
+      list.className = "table-wrap";
+      const items = filteredApps();
+
+      if (!items.length) {
+        list.innerHTML = `<article class="app-card"><div class="card-main"><div class="app-purpose">Nenhum app encontrado.</div></div></article>`;
+        return;
+      }
+
+      list.innerHTML = `
+        <table class="app-table">
+          <thead>
+            <tr>
+              <th>Aplicação</th>
+              <th>Categoria</th>
+              <th>Status</th>
+              <th>Conta</th>
+              <th>Último Arquivo</th>
+              <th>Alteração</th>
+              <th>Próxima Ação</th>
+              <th>Projeto</th>
+              <th>Deploy</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${items.map(({ app, index }) => `
+              <tr>
+                <td><div class="table-field" contenteditable="true" oninput="updateField(${index}, 'nome', this.innerText)">${escapeHTML(app.nome)}</div></td>
+                <td>
+                  <select class="category cat-${normalize(app.categoria)}" onchange="updateCategory(${index}, this.value)">
+                    ${categories.map(c => `<option ${app.categoria === c ? "selected" : ""}>${c}</option>`).join("")}
+                  </select>
+                </td>
+                <td>
+                  <select class="status ${normalize(app.status)}" onchange="updateStatus(${index}, this.value)">
+                    ${statuses.map(s => `<option ${app.status === s ? "selected" : ""}>${s}</option>`).join("")}
+                  </select>
+                </td>
+                <td><div class="table-field" contenteditable="true" oninput="updateField(${index}, 'conta', this.innerText)">${escapeHTML(app.conta)}</div></td>
+                <td><div class="table-field file" contenteditable="true" oninput="updateField(${index}, 'ultimoArquivo', this.innerText)">${escapeHTML(app.ultimoArquivo)}</div></td>
+                <td><div class="table-field" contenteditable="true" oninput="updateField(${index}, 'ultima', this.innerText)">${escapeHTML(app.ultima)}</div></td>
+                <td><div class="table-field" contenteditable="true" oninput="updateField(${index}, 'proxima', this.innerText)">${escapeHTML(app.proxima)}</div></td>
+                <td><button class="table-url" title="Abrir projeto" onclick="openUrl(apps[${index}].projeto)">↗</button></td>
+                <td><button class="table-url" title="Abrir deploy" onclick="openUrl(apps[${index}].deploy)">↗</button></td>
+                <td><button class="delete" onclick="removeApp(${index})">Excluir</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function toggleView() {
+      viewMode = viewMode === "cards" ? "list" : "cards";
+      document.getElementById("viewToggle").textContent = viewMode === "cards" ? "☰" : "⊞";
+      document.getElementById("viewToggle").title = viewMode === "cards" ? "Modo lista" : "Modo cards";
+      renderApps();
+    }
+
+    function updateStats() {
+      document.getElementById("totalApps").textContent = apps.length;
+      document.getElementById("utmsApps").textContent = apps.filter(a => a.categoria === "Trabalho - UTMS").length;
+      document.getElementById("rpgApps").textContent = apps.filter(a => a.categoria === "RPG").length;
+      document.getElementById("personalApps").textContent = apps.filter(a => String(a.categoria || "").startsWith("Pessoal -")).length;
+      document.getElementById("activeApps").textContent = apps.filter(a => a.status === "Ativo").length;
+    }
+
+    function saveLocal() {
+      localStorage.setItem(storageKey, JSON.stringify({ apps, viewMode }));
+      alert("Inventário salvo neste navegador.");
+    }
+
+    function loadLocal() {
+      const saved = localStorage.getItem(storageKey);
+      if (!saved) return;
+
+      const parsed = JSON.parse(saved);
+      apps = parsed.apps || apps;
+      viewMode = parsed.viewMode || "cards";
+
+      document.getElementById("viewToggle").textContent = viewMode === "cards" ? "☰" : "⊞";
+      document.getElementById("viewToggle").title = viewMode === "cards" ? "Modo lista" : "Modo cards";
+    }
+
+    function clearSaved() {
+      localStorage.removeItem(storageKey);
+      alert("Dados salvos removidos.");
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(apps, null, 2)], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "inventario-aplicacoes.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportDoc() {
+      const grouped = categories.reduce((acc, cat) => {
+        const rows = apps.filter(app => app.categoria === cat);
+        if (rows.length) acc[cat] = rows;
+        return acc;
+      }, {});
+
+      const htmlDoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Inventário de Aplicações</title>
+          <style>
+            body { font-family: Georgia, serif; color: #222; }
+            h1 { color: #7a5b1e; }
+            h2 { color: #7a5b1e; border-bottom: 1px solid #c8b06a; padding-bottom: 4px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+            th, td { border: 1px solid #bbb; padding: 7px; vertical-align: top; }
+            th { background: #eee5c8; }
+            a { color: #7a5b1e; }
+          </style>
+        </head>
+        <body>
+          <h1>Inventário de Aplicações</h1>
+          <p>Exportado em ${new Date().toLocaleDateString("pt-BR")}.</p>
+
+          ${Object.entries(grouped).map(([cat, rows]) => `
+            <h2>${escapeHTML(cat)}</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Aplicação</th>
+                  <th>Status</th>
+                  <th>Conta</th>
+                  <th>Finalidade</th>
+                  <th>Último Arquivo</th>
+                  <th>Última Alteração</th>
+                  <th>Próxima Ação</th>
+                  <th>Projeto</th>
+                  <th>Deploy</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rows.map(app => `
+                  <tr>
+                    <td>${escapeHTML(app.nome)}</td>
+                    <td>${escapeHTML(app.status)}</td>
+                    <td>${escapeHTML(app.conta)}</td>
+                    <td>${escapeHTML(app.finalidade)}</td>
+                    <td>${escapeHTML(app.ultimoArquivo)}</td>
+                    <td>${escapeHTML(app.ultima)}</td>
+                    <td>${escapeHTML(app.proxima)}</td>
+                    <td>${cleanUrl(app.projeto) ? `<a href="${cleanUrl(app.projeto)}">${escapeHTML(app.projeto)}</a>` : ""}</td>
+                    <td>${cleanUrl(app.deploy) ? `<a href="${cleanUrl(app.deploy)}">${escapeHTML(app.deploy)}</a>` : ""}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          `).join("")}
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob(["\ufeff", htmlDoc], { type: "application/msword" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "inventario-aplicacoes.doc";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    loadLocal();
+    renderApps();
+  </script>
+</body>
+</html>
